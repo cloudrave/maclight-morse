@@ -2,7 +2,7 @@
 
 require 'maclight'
 
-BASE_TIME_UNIT = 0.14
+BASE_TIME_UNIT = 0.12
 DIT = 1 * BASE_TIME_UNIT
 DAH = 3 * BASE_TIME_UNIT
 INTER_GAP = 1 * BASE_TIME_UNIT
@@ -10,32 +10,32 @@ SHORT_GAP = 3 * BASE_TIME_UNIT
 MEDIUM_GAP = 7 * BASE_TIME_UNIT
 
 MORSE_DICTIONARY = {
-    'a' => '.-',
-    'b' => '-...',
-    'c' => '-.-.',
-    'd' => '-..',
-    'e' => '.',
-    'f' => '..-.',
-    'g' => '--.',
-    'h' => '....',
-    'i' => '..',
-    'j' => '.---',
-    'k' => '-.-',
-    'l' => '.-..',
-    'm' => '--',
-    'n' => '-.',
-    'o' => '---',
-    'p' => '.--.',
-    'q' => '--.-',
-    'r' => '.-.',
-    's' => '...',
-    't' => '-',
-    'u' => '..-',
-    'v' => '...-',
-    'w' => '.--',
-    'x' => '-..-',
-    'y' => '-.--',
-    'z' => '--..',
+    'A' => '.-',
+    'B' => '-...',
+    'C' => '-.-.',
+    'D' => '-..',
+    'E' => '.',
+    'F' => '..-.',
+    'G' => '--.',
+    'H' => '....',
+    'I' => '..',
+    'J' => '.---',
+    'K' => '-.-',
+    'L' => '.-..',
+    'M' => '--',
+    'N' => '-.',
+    'O' => '---',
+    'P' => '.--.',
+    'Q' => '--.-',
+    'R' => '.-.',
+    'S' => '...',
+    'T' => '-',
+    'U' => '..-',
+    'V' => '...-',
+    'W' => '.--',
+    'X' => '-..-',
+    'Y' => '-.--',
+    'Z' => '--..',
     '1' => '.----',
     '2' => '..---',
     '3' => '...--',
@@ -88,11 +88,11 @@ class Dah < MorseFragment
 end
 
 
-light = KeyboardLight.new
-dit = Dit.new(light)
-dah = Dah.new(light)
+# light = KeyboardLight.new
+# dit = Dit.new(light)
+# dah = Dah.new(light)
 
-string = ARGV[0].to_s
+string = ARGV[0].to_s.upcase
 
 words = string.split(' ')
 words.each do |word|
@@ -102,9 +102,17 @@ words.each do |word|
         encodedBits.split('').each do |encodedBit|
             case encodedBit
             when '.'
-                dit.display()
+                MacLight.capslock(true)
+                print "·"
+                STDOUT.flush
+                sleep DIT
+                MacLight.capslock(false)
             when '-'
-                dah.display()
+                MacLight.capslock(true)
+                print "–"
+                STDOUT.flush
+                sleep DAH
+                MacLight.capslock(false)
             else
                 raise "Unexpected encoded bit"
             end
