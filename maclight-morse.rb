@@ -64,15 +64,9 @@ class KeyboardLight
     end
 end
 
-
 class MorseFragment
     def initialize(light)
         @light = light
-    end
-    def display_bits
-        @bits.each do |bit|
-            bit.display
-        end
     end
     def display; raise "Abstract method"; end
 end
@@ -82,84 +76,44 @@ class Dit < MorseFragment
         @light.setState(1)
         sleep DIT
         @light.setState(0)
-        sleep INTER_GAP
     end
 end
-
 
 class Dah < MorseFragment
     def display
         @light.setState(1)
         sleep DAH
         @light.setState(0)
-        sleep INTER_GAP
     end
 end
 
 
-class InterGap < MorseFragment
-    def display
-        @light.setState(0)
-        sleep SHORT_GAP
-    end
-end
+light = KeyboardLight.new
+dit = Dit.new(light)
+dah = Dah.new(light)
 
+string = ARGV[0].to_s
 
-
-class Letter < MorseFragment
-    def initialize(light, letter)
-        super(light)
-        if letter.length > 1
-            raise "Letter can only be one character long"
-        end
-        @bits ||= []
+words = string.split(' ')
+words.each do |word|
+    letters = word.split('')
+    letters.each do |letter|
         encodedBits = MORSE_DICTIONARY[letter]
         encodedBits.split('').each do |encodedBit|
             case encodedBit
             when '.'
-                bit = Dit.new(@light)
+                dit.display()
             when '-'
-                bit = Dah.new(@light)
+                dah.display()
             else
                 raise "Unexpected encoded bit"
             end
-            @bits << bit
+            sleep INTER_GAP
         end
-        @bits << InterGap.new(@light)
-    end
-    def display
-        display_bits()
         sleep SHORT_GAP
     end
+    sleep MEDIUM_GAP
 end
 
-class WordGap < MorseFragment
-    def display
-        @light.setState(0)
-        sleep MEDIUM_GAP
-    end
-end
-
-class Letter < MorseFragment
-    def initialize(light, word)
-        super(light)
-        if word.index(' ') != nil
-            raise "No spaces are allowed inside of a single word"
-        end
-        @bits ||= []
-        letters = word.split('')
-        letters.each do |letter|
-            @bits << Letter.new(light, letter)
-        end
-    end
-    def display
-
-    end
-end
-
-light = KeyboardLight.new
-# myDah = Dah.new(light)
-b = Letter.new(light, 'b')
-b.display()
 
 
